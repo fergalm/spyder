@@ -15,6 +15,9 @@ def get_options(argv=None):
     parser.add_argument('--new-instance', action='store_true', default=False,
                       help="Run a new instance of Spyder, even if the single "
                            "instance mode has been turned on (default)")
+    parser.add_argument('-f', '--file', dest='requested_files_only', default=False,
+                        action='store_true',
+                      help="Run a new instance of Spyder and only open files requested on command line. Implies --new-instance")
     parser.add_argument('--defaults', dest="reset_to_defaults",
                       action='store_true', default=False,
                       help="Reset configuration settings to defaults")
@@ -66,5 +69,10 @@ def get_options(argv=None):
                        )
     parser.add_argument('files', nargs='*')
     options = parser.parse_args(argv)
+    
+    #requested_files_only implies new_instance be True
+    if options.requested_files_only:
+        options.new_instance = True 
+        
     args = options.files
     return options, args

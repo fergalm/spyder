@@ -1241,9 +1241,11 @@ class MainWindow(QMainWindow):
         logger.info("*** End of MainWindow setup ***")
         self.is_starting_up = False
 
-    def post_visible_setup(self):
-        """Actions to be performed only after the main window's `show` method
-        was triggered"""
+    def post_visible_setup(self, requested_files_only):
+        """
+        Actions to be performed only after the main window's `show` method
+        was triggered
+        """
         self.restore_scrollbar_position.emit()
 
         # [Workaround for Issue 880]
@@ -1312,7 +1314,7 @@ class MainWindow(QMainWindow):
             self.projects.reopen_last_project()
 
             # If no project is active, load last session
-            if self.projects.get_active_project() is None:
+            if self.projects.get_active_project() is None and not requested_files_only:
                 self.editor.setup_open_files()
 
         # Check for spyder updates
@@ -3211,7 +3213,7 @@ def run_spyder(app, options, args):
         raise
 
     main.show()
-    main.post_visible_setup()
+    main.post_visible_setup(options.requested_files_only)
 
     if main.console:
         main.console.shell.interpreter.namespace['spy'] = \
